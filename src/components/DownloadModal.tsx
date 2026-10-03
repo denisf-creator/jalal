@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, ArrowDownToLine, ShieldCheck, RotateCcw } from 'lucide-react';
+import { X, ArrowDownToLine, ShieldCheck, RotateCcw, Key, Copy, Check } from 'lucide-react';
 
 interface DownloadModalProps {
   isOpen: boolean;
@@ -10,6 +10,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose })
   const [rendered, setRendered] = useState(isOpen);
   const [active, setActive] = useState(false);
   const [downloadState, setDownloadState] = useState<'idle' | 'downloading' | 'completed'>('idle');
+  const [copiedPassword, setCopiedPassword] = useState(false);
 
   // Smooth mount/unmount and opening/closing animation lifecycle
   useEffect(() => {
@@ -26,6 +27,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose })
       const timer = setTimeout(() => {
         setRendered(false);
         setDownloadState('idle');
+        setCopiedPassword(false);
       }, 350);
       return () => clearTimeout(timer);
     }
@@ -44,11 +46,17 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose })
 
   if (!rendered) return null;
 
+  const handleCopyPassword = () => {
+    navigator.clipboard.writeText('xeno');
+    setCopiedPassword(true);
+    setTimeout(() => setCopiedPassword(false), 2000);
+  };
+
   const handleStartDownload = () => {
     setDownloadState('downloading');
     const element = document.createElement("a");
     const file = new Blob([
-      `Xeno Executor v2.4.1 (64-bit)\n\nOfficial Next Generation release.`
+      `Xeno Executor v2.4.1 (64-bit)\n\nArchive Password: xeno\nOfficial Next Generation release.`
     ], { type: 'application/zip' });
     element.href = URL.createObjectURL(file);
     element.download = "Xeno-v2.4.1.zip";
@@ -149,6 +157,53 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose })
           )}
         </div>
 
+        {/* Archive Password Card */}
+        <div className="mb-5">
+          <div
+            onClick={handleCopyPassword}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleCopyPassword();
+              }
+            }}
+            className="group relative w-full rounded-2xl p-4 bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.1] hover:border-white/[0.22] transition-all flex items-center justify-between gap-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 active:scale-[0.99] select-none"
+            title="Click to copy archive password"
+            aria-label="Archive password: xeno. Click to copy"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-xl bg-white/[0.07] border border-white/[0.12] flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform shadow-inner">
+                <Key className="w-5 h-5 text-white/90" />
+              </div>
+              <div>
+                <div className="text-[10px] font-mono tracking-widest uppercase text-[#8A8A93] flex items-center gap-1.5">
+                  <span>Archive Password</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                </div>
+                <div className="text-2xl sm:text-3xl font-mono font-black text-white tracking-normal">
+                  xeno
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.07] group-hover:bg-white/[0.12] border border-white/[0.1] text-xs font-mono transition-all shrink-0">
+              {copiedPassword ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-400 font-semibold">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5 text-[#8A8A93] group-hover:text-white transition-colors" />
+                  <span className="text-[#8A8A93] group-hover:text-white transition-colors">Click to copy</span>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Antivirus False Positive Notice */}
         <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.05] text-xs text-[#8A8A93] leading-relaxed mb-6 space-y-1.5">
           <div className="flex items-center gap-1.5 text-white/90 font-medium">
@@ -164,7 +219,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose })
         <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-mono text-[#8A8A93]">
           <div className="p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.04]">
             <span className="text-white block font-medium mb-0.5">1. Extract</span>
-            <span>Unzip folder</span>
+            <span>Pass: xeno</span>
           </div>
           <div className="p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.04]">
             <span className="text-white block font-medium mb-0.5">2. Launch</span>
