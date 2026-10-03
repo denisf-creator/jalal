@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        try {
+          var originalFetch = window.fetch;
+          var _fetch = originalFetch;
+          try {
+            Object.defineProperty(window, 'fetch', {
+              get: function() { return _fetch; },
+              set: function(v) { _fetch = v; },
+              configurable: true,
+              enumerable: true
+            });
+          } catch (e1) {
+            try {
+              if (window.Window && window.Window.prototype) {
+                Object.defineProperty(window.Window.prototype, 'fetch', {
+                  get: function() { return _fetch; },
+                  set: function(v) { _fetch = v; },
+                  configurable: true,
+                  enumerable: true
+                });
+              }
+            } catch (e2) {}
+          }
+        } catch (e) {}
+
+        window.addEventListener('error', function(event) {
+          if (event && event.message && event.message.indexOf('fetch') !== -1 && event.message.indexOf('getter') !== -1) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+          }
+        }, true);
+      })();
+    </script>
+    <title>Xeno — Roblox Execution Platform</title>
+    <meta name="description" content="A new standard for Roblox execution. A fast, lightweight and modern execution experience built with simplicity in mind." />
+    <meta property="og:title" content="Xeno — Roblox Execution Platform" />
+    <meta property="og:description" content="A new standard for Roblox execution. A fast, lightweight and modern execution experience built with simplicity in mind." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-[#050507] text-[#F5F5F7] antialiased selection:bg-white/20 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

@@ -1,0 +1,6 @@
+{
+  "name": "Xeno — Roblox Execution Platform",
+  "description": "Official modern website for Xeno, a fast, lightweight and modern Roblox executor built with liquid glass aesthetics and simplicity.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
